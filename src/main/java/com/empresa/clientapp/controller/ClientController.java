@@ -36,7 +36,7 @@ public class ClientController {
             cliente.setId(id);
             return clienteService.save(cliente);
         }
-        return null; // Ou lançar uma exceção, conforme necessidade
+        return null;
     }
 
     @DeleteMapping("/{id}")
