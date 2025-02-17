@@ -22,11 +22,14 @@ public class Cliente {
     private String cpf;
     private String cnpj;
     private String ie;
+    private String telefone;
+    private String email;
+    private String observacao;
 
     // Construtores
     public Cliente() {}
 
-    public Cliente(String nome, String endereco, String tipoPessoa, String indicacao, String cpf, String cnpj, String ie) {
+    public Cliente(String nome, String endereco, String tipoPessoa, String indicacao, String cpf, String cnpj, String ie, String telefone, String email, String observacao) {
         this.nome = nome;
         this.endereco = endereco;
         this.tipoPessoa = tipoPessoa;
@@ -34,6 +37,9 @@ public class Cliente {
         this.cpf = cpf;
         this.cnpj = cnpj;
         this.ie = ie;
+        this.telefone = telefone;
+        this.email = email;
+        this.observacao = observacao;
     }
 
     // Getters e Setters
@@ -99,6 +105,30 @@ public class Cliente {
 
     public void setIe(String ie) {
         this.ie = ie;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 }
 
