@@ -1,26 +1,26 @@
 package com.empresa.clientapp.model;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
 public class ItemOrdemCompra {
-    private Long id;
-    private Produto produto;
-    private String descricaoServico; // Apenas se for serviço
-    private int quantidade;
-    private double valor;
 
-    public ItemOrdemCompra() {
-    }
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    public ItemOrdemCompra(Long id, Produto produto, String descricaoServico, int quantidade, double valor) {
-        this.id = id;
-        this.produto = produto;
-        this.descricaoServico = descricaoServico;
-        this.quantidade = quantidade;
-        this.valor = valor;
-    }
+        private String descricao;
+        private int quantidade;
+        private BigDecimal valor;
 
-    public double calcularSubtotal() {
-        return quantidade * valor;
-    }
+        @ManyToOne
+        @JoinColumn(name = "ordem_compra_id")
+        private OrdemCompra ordemCompra;
+
+        @ManyToOne
+        @JoinColumn(name = "produto_id", nullable = true)
+        private Produto produto;
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -29,14 +29,14 @@ public class ItemOrdemCompra {
     public Produto getProduto() { return produto; }
     public void setProduto(Produto produto) { this.produto = produto; }
 
-    public String getDescricaoServico() { return descricaoServico; }
-    public void setDescricaoServico(String descricaoServico) { this.descricaoServico = descricaoServico; }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
     public int getQuantidade() { return quantidade; }
     public void setQuantidade(int quantidade) { this.quantidade = quantidade; }
 
-    public double getValor() { return valor; }
-    public void setValor(double valor) { this.valor = valor; }
+    public BigDecimal getValor() { return valor; }
+    public void setValor(BigDecimal valor) { this.valor = valor; }
 }
 
 

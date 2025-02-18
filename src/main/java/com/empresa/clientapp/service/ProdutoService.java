@@ -30,4 +30,18 @@ public class ProdutoService {
         produtoRepository.deleteById(id);
     }
 
+    public void reduzirEstoque(Long id, int quantidadeVendida) {
+        Optional<Produto> produtoOpt = produtoRepository.findById(id);
+        if (produtoOpt.isPresent()) {
+            Produto produto = produtoOpt.get();
+            if (produto.getQuantidade() >= quantidadeVendida) {
+                produto.setQuantidade(produto.getQuantidade() - quantidadeVendida);
+                produtoRepository.save(produto);
+            } else {
+                throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
+            }
+        } else {
+            throw new RuntimeException("Produto não encontrado.");
+        }
+    }
 }

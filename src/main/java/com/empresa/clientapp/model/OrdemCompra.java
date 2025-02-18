@@ -1,36 +1,34 @@
 package com.empresa.clientapp.model;
 
 import com.empresa.clientapp.model.ItemOrdemCompra;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
 
+@Entity
 public class OrdemCompra {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
+
     private LocalDate data;
-    private List<ItemOrdemCompra> itens;
-    private double desconto;
+    private BigDecimal desconto;
     private String observacao;
-    private double total;
+    private BigDecimal total;
 
-    public OrdemCompra() {
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ordemCompra")
+    private List<ItemOrdemCompra> itens;
 
-    public OrdemCompra(Long id, Cliente cliente, LocalDate data, List<ItemOrdemCompra> itens, double desconto, String observacao) {
-        this.id = id;
-        this.cliente = cliente;
-        this.data = data;
-        this.itens = itens;
-        this.desconto = desconto;
-        this.observacao = observacao;
-        this.total = calcularTotal();
-    }
-
-    public double calcularTotal() {
-        double totalItens = itens.stream().mapToDouble(ItemOrdemCompra::calcularSubtotal).sum();
-        return totalItens - desconto;
-    }
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -45,14 +43,14 @@ public class OrdemCompra {
     public List<ItemOrdemCompra> getItens() { return itens; }
     public void setItens(List<ItemOrdemCompra> itens) { this.itens = itens; }
 
-    public double getDesconto() { return desconto; }
-    public void setDesconto(double desconto) { this.desconto = desconto; }
+    public BigDecimal getDesconto() { return desconto; }
+    public void setDesconto(BigDecimal desconto) { this.desconto = desconto; }
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
 
-    public double getTotal() { return total; }
-    public void setTotal(double total) { this.total = total; }
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
 }
 
 
