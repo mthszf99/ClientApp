@@ -1,8 +1,11 @@
 package com.empresa.clientapp.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "itens_ordem_compra")
 public class ItemOrdemCompra {
