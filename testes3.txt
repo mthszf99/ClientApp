@@ -1,0 +1,17 @@
+teste de orçamentos (tem que colocar o /gerar-pdf após o orçamentos)
+
+{
+  "nomeCliente": "Matheus Ferreira",
+  "data": "2025-02-25",
+  "desconto": 10.0,
+  "itens": [
+    {
+      "descricao": "Manutenção do Ar Condicionado",
+      "valor": 150.0
+    },
+    {
+      "descricao": "Troca do Filtro",
+      "valor": 50.0
+    }
+  ]
+}

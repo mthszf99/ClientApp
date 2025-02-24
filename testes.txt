@@ -1,0 +1,16 @@
+teste de clientes
+
+{
+  "nome": "Matheus Ferreira Pires",
+  "endereco": "Rua Senador Campos Vergueiro, 200 Planalto",
+  "dataNascimento": "1999-03-12",
+  "cpf": "139.016.256-74",
+  "rg": "MG-19.050-663",
+  "cnpj": null,
+  "ie": null,
+  "indicacao": "Sócio",
+  "pessoaFisica": true,
+  "telefone": "(31) 9 9277-8054",
+  "email": "matheusf99@outlook.com",
+  "observacao": "nenhuma"
+}

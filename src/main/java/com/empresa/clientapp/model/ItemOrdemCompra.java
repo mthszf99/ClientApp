@@ -4,39 +4,82 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "itens_ordem_compra")
 public class ItemOrdemCompra {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private String descricao;
-        private int quantidade;
-        private BigDecimal valor;
+    @ManyToOne
+    @JoinColumn(name = "ordem_compra_id", nullable = false)
+    private OrdemCompra ordemCompra;
 
-        @ManyToOne
-        @JoinColumn(name = "ordem_compra_id")
-        private OrdemCompra ordemCompra;
+    @ManyToOne
+    @JoinColumn(name = "produto_id", nullable = false)
+    private Produto produto;
 
-        @ManyToOne
-        @JoinColumn(name = "produto_id", nullable = true)
-        private Produto produto;
+    @Column(nullable = false)
+    private Integer quantidade;
+
+    @Column(nullable = false)
+    private BigDecimal precoUnitario;
+
+    @Column(nullable = false)
+    private BigDecimal subtotal;
+
+    public void calcularSubtotal() {
+        this.subtotal = this.precoUnitario.multiply(BigDecimal.valueOf(this.quantidade));
+    }
 
     // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Produto getProduto() { return produto; }
-    public void setProduto(Produto produto) { this.produto = produto; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public OrdemCompra getOrdemCompra() {
+        return ordemCompra;
+    }
 
-    public int getQuantidade() { return quantidade; }
-    public void setQuantidade(int quantidade) { this.quantidade = quantidade; }
+    public void setOrdemCompra(OrdemCompra ordemCompra) {
+        this.ordemCompra = ordemCompra;
+    }
 
-    public BigDecimal getValor() { return valor; }
-    public void setValor(BigDecimal valor) { this.valor = valor; }
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getPrecoUnitario() {
+        return precoUnitario;
+    }
+
+    public void setPrecoUnitario(BigDecimal precoUnitario) {
+        this.precoUnitario = precoUnitario;
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
 }
 
 

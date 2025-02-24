@@ -1,0 +1,12 @@
+teste de fornecedor
+
+{
+  "nome": "Distrifrio LTDA",
+  "cpfCnpj": "12.345.678/0001-99",
+  "endereco": "Avenida Principal, 456",
+  "tipo": "Distribuidor",
+  "telefone": "(31) 3333-4444",
+  "email": "ditrifrio123@gmail.com",
+  "dataCadastro": "2024-02-25T00:00:00",
+  "dataAtualizacao": "2024-02-25T00:00:00"
+}

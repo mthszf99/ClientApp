@@ -1,0 +1,14 @@
+teste produtos
+
+{
+  "nome": "Geladeira Frost Free",
+  "quantidade": 10,
+  "marca": "Brastemp",
+  "valorCompra": 1800.00,
+  "valorVenda": 2500.00,
+  "tipo": "Eletrodoméstico",
+  "descricao": "Geladeira Frost Free Duplex 375L",
+  "fornecedor": {
+    "id": 1
+  }
+}
