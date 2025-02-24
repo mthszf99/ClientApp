@@ -1,0 +1,13 @@
+teste de ordens de compra
+
+{
+  "cliente": { "id": 4 },
+  "observacao": "Entrega a domicilio",
+  "itens": [
+    {
+      "produto": { "id": 4 },
+      "quantidade": 2
+    }
+  ],
+  "desconto": 5.00
+}

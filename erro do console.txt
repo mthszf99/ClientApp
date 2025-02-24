@@ -1,3 +1,0 @@
-erro do console
-
-2025-02-24 20:31:28.709  WARN 8976 --- [nio-8080-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot read field "intCompact" because "augend" is null; nested exception is com.fasterxml.jackson.databind.JsonMappingException: Cannot read field "intCompact" because "augend" is null<EOL> at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 13, column: 3] (through reference chain: com.empresa.clientapp.model.OrdemCompra["itens"])]
