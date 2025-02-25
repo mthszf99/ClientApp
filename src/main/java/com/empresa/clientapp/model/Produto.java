@@ -34,6 +34,10 @@ public class Produto {
     @JoinColumn(name = "fornecedor_id", nullable = false)
     private Fornecedor fornecedor;
 
+    // Construtor padrão
+    public Produto() {
+    }
+
     // Getters e Setters
     public Long getId() {
         return id;
