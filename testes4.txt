@@ -1,13 +1,26 @@
 teste de ordens de compra
 
 {
-  "cliente": { "id": 4 },
-  "observacao": "Entrega a domicilio",
+  "cliente": {
+    "id": 4
+  },
+  "formaPagamento": "Cartão de Crédito",
+  "desconto": 10.00,
+  "observacoes": "Entrega programada para o dia seguinte",
   "itens": [
     {
-      "produto": { "id": 4 },
-      "quantidade": 2
+      "produto": {
+        "id": 4
+      },
+      "quantidade": 2,
+      "valorUnitario": 25.00
+    },
+    {
+      "produto": {
+        "id": 5
+      },
+      "quantidade": 1,
+      "valorUnitario": 31.00
     }
-  ],
-  "desconto": 5.00
+  ]
 }
