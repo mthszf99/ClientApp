@@ -22,37 +22,65 @@ public class VendaController {
 
     @GetMapping
     public List<Venda> getAllVendas() {
-        return vendaService.findAll();
+        List<Venda> vendas = vendaService.findAll();
+
+        // Garantir que os valores totais e itens estão atualizados
+        vendas.forEach(Venda::recalcularTotal);
+
+        return vendas;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Venda> getVendaById(@PathVariable Long id) {
-        Optional<Venda> venda = vendaService.findById(id);
-        return venda.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Venda> vendaOpt = vendaService.findById(id);
+
+        if (!vendaOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Venda venda = vendaOpt.get();
+        // Garantir que o total está atualizado
+        venda.recalcularTotal();
+
+        return ResponseEntity.ok(venda);
     }
 
     @GetMapping("/cliente/{clienteId}")
     public List<Venda> getVendasByCliente(@PathVariable Long clienteId) {
-        return vendaService.findByClienteId(clienteId);
+        List<Venda> vendas = vendaService.findByClienteId(clienteId);
+        vendas.forEach(Venda::recalcularTotal);
+        return vendas;
     }
 
     @GetMapping("/periodo")
     public List<Venda> getVendasByPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
-        return vendaService.findByPeriodo(inicio, fim);
+        List<Venda> vendas = vendaService.findByPeriodo(inicio, fim);
+        vendas.forEach(Venda::recalcularTotal);
+        return vendas;
     }
 
     @GetMapping("/produto/{produtoId}")
     public List<Venda> getVendasByProduto(@PathVariable Long produtoId) {
-        return vendaService.findByProdutoId(produtoId);
+        List<Venda> vendas = vendaService.findByProdutoId(produtoId);
+        vendas.forEach(Venda::recalcularTotal);
+        return vendas;
     }
 
     @PostMapping
     public ResponseEntity<Venda> createVenda(@Valid @RequestBody Venda venda) {
-        Venda novaVenda = vendaService.save(venda);
-        return ResponseEntity.ok(novaVenda);
+        try {
+            // Garantir que temos uma data de venda
+            if (venda.getDataVenda() == null) {
+                venda.setDataVenda(LocalDateTime.now());
+            }
+
+            Venda novaVenda = vendaService.save(venda);
+            return ResponseEntity.ok(novaVenda);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @PutMapping("/{id}")
@@ -62,8 +90,12 @@ public class VendaController {
         }
 
         venda.setId(id);
-        Venda vendaAtualizada = vendaService.save(venda);
-        return ResponseEntity.ok(vendaAtualizada);
+        try {
+            Venda vendaAtualizada = vendaService.save(venda);
+            return ResponseEntity.ok(vendaAtualizada);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -22,24 +22,35 @@ public class Venda {
     private LocalDateTime dataVenda;
 
     @Column(nullable = false)
-    private BigDecimal valorTotal;
+    private BigDecimal valorTotal = BigDecimal.ZERO; // Inicializar com ZERO
 
-    private BigDecimal desconto;
+    private BigDecimal desconto = BigDecimal.ZERO; // Inicializar com ZERO
 
     private String formaPagamento;
 
     private String observacoes;
 
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ItemVenda> itens = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        this.dataVenda = LocalDateTime.now();
+        if (this.dataVenda == null) {
+            this.dataVenda = LocalDateTime.now();
+        }
+        // Garantir que o valorTotal seja calculado antes de salvar
+        recalcularTotal();
     }
 
     // Método para adicionar item à venda
     public void adicionarItem(ItemVenda item) {
+        if (item == null) return;
+
+        // Verificar se o item já tem o subtotal calculado
+        if (item.getSubtotal() == null) {
+            item.calcularSubtotal();
+        }
+
         itens.add(item);
         item.setVenda(this);
         recalcularTotal();
@@ -47,21 +58,46 @@ public class Venda {
 
     // Método para remover item da venda
     public void removerItem(ItemVenda item) {
-        itens.remove(item);
-        item.setVenda(null);
-        recalcularTotal();
+        if (itens.remove(item)) {
+            item.setVenda(null);
+            recalcularTotal();
+        }
     }
 
-    // Método para calcular o total da venda
+    // Método para calcular o total da venda com verificações adicionais
     public void recalcularTotal() {
         BigDecimal total = BigDecimal.ZERO;
+
+        // Log para debug
+        System.out.println("Recalculando total da venda #" + id + " com " + itens.size() + " itens");
+
         for (ItemVenda item : itens) {
-            total = total.add(item.getSubtotal());
+            // Garantir que o subtotal está calculado
+            if (item.getSubtotal() == null) {
+                item.calcularSubtotal();
+            }
+
+            // Log para debug
+            System.out.println("Item: " + item.getProduto().getNome() + " - Subtotal: " + item.getSubtotal());
+
+            if (item.getSubtotal() != null) {
+                total = total.add(item.getSubtotal());
+            }
         }
 
-        if (desconto != null) {
-            total = total.subtract(desconto);
+        // Aplicar desconto se existir
+        if (desconto != null && desconto.compareTo(BigDecimal.ZERO) > 0) {
+            if (desconto.compareTo(total) <= 0) {
+                total = total.subtract(desconto);
+            } else {
+                // Se o desconto for maior que o total, apenas zerar o total
+                desconto = total;
+                total = BigDecimal.ZERO;
+            }
         }
+
+        // Log para debug
+        System.out.println("Valor total calculado: " + total);
 
         this.valorTotal = total;
     }
@@ -92,19 +128,23 @@ public class Venda {
     }
 
     public BigDecimal getValorTotal() {
+        // Garantir que não seja nulo
+        if (valorTotal == null) {
+            recalcularTotal();
+        }
         return valorTotal;
     }
 
     public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
+        this.valorTotal = valorTotal != null ? valorTotal : BigDecimal.ZERO;
     }
 
     public BigDecimal getDesconto() {
-        return desconto;
+        return desconto != null ? desconto : BigDecimal.ZERO;
     }
 
     public void setDesconto(BigDecimal desconto) {
-        this.desconto = desconto;
+        this.desconto = desconto != null ? desconto : BigDecimal.ZERO;
         recalcularTotal();
     }
 
@@ -129,6 +169,11 @@ public class Venda {
     }
 
     public void setItens(List<ItemVenda> itens) {
-        this.itens = itens;
+        this.itens = itens != null ? itens : new ArrayList<>();
+        // Atualizar a referência da venda em cada item
+        for (ItemVenda item : this.itens) {
+            item.setVenda(this);
+        }
+        recalcularTotal();
     }
 }

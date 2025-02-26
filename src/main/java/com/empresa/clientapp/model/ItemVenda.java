@@ -30,21 +30,41 @@ public class ItemVenda {
 
     // Construtor padrão
     public ItemVenda() {
+        this.quantidade = 0;
+        this.valorUnitario = BigDecimal.ZERO;
+        this.subtotal = BigDecimal.ZERO;
     }
 
     // Construtor com parâmetros
     public ItemVenda(Produto produto, Integer quantidade) {
         this.produto = produto;
         this.quantidade = quantidade;
-        this.valorUnitario = produto.getValorVenda();
+        if (produto != null && produto.getValorVenda() != null) {
+            this.valorUnitario = produto.getValorVenda();
+        } else {
+            this.valorUnitario = BigDecimal.ZERO;
+        }
         calcularSubtotal();
     }
 
-    // Método para calcular o subtotal
+    // Método para calcular o subtotal com verificações adicionais
     public void calcularSubtotal() {
-        if (this.quantidade != null && this.valorUnitario != null) {
-            this.subtotal = this.valorUnitario.multiply(BigDecimal.valueOf(this.quantidade));
+        if (this.quantidade == null || this.quantidade <= 0) {
+            this.quantidade = 1; // Valor padrão
         }
+
+        if (this.valorUnitario == null) {
+            if (this.produto != null && this.produto.getValorVenda() != null) {
+                this.valorUnitario = this.produto.getValorVenda();
+            } else {
+                this.valorUnitario = BigDecimal.ZERO;
+            }
+        }
+
+        this.subtotal = this.valorUnitario.multiply(BigDecimal.valueOf(this.quantidade));
+
+        // Log para debug
+        System.out.println("Calculando subtotal: " + this.valorUnitario + " * " + this.quantidade + " = " + this.subtotal);
     }
 
     // Getters e Setters
@@ -70,7 +90,7 @@ public class ItemVenda {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
-        if (produto != null) {
+        if (produto != null && produto.getValorVenda() != null) {
             this.valorUnitario = produto.getValorVenda();
             calcularSubtotal();
         }
@@ -95,10 +115,25 @@ public class ItemVenda {
     }
 
     public BigDecimal getSubtotal() {
+        // Calcular se for nulo
+        if (this.subtotal == null) {
+            calcularSubtotal();
+        }
         return subtotal;
     }
 
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemVenda{" +
+                "id=" + id +
+                ", produto=" + (produto != null ? produto.getNome() : "null") +
+                ", quantidade=" + quantidade +
+                ", valorUnitario=" + valorUnitario +
+                ", subtotal=" + subtotal +
+                '}';
     }
 }

@@ -53,17 +53,58 @@ public class VendaService {
             if (!clienteOpt.isPresent()) {
                 throw new RuntimeException("Cliente não encontrado");
             }
+            // Garantir que estamos usando a entidade gerenciada
+            venda.setCliente(clienteOpt.get());
+        } else {
+            throw new RuntimeException("Cliente é obrigatório para a venda");
         }
 
-        // Verificar e atualizar estoque para cada item
+        // Processar cada item da venda
         for (ItemVenda item : venda.getItens()) {
-            Produto produto = item.getProduto();
-            if (produto != null && produto.getId() != null) {
-                produtoService.reduzirEstoque(produto.getId(), item.getQuantidade());
+            if (item.getProduto() != null && item.getProduto().getId() != null) {
+                // Obter o produto gerenciado do banco de dados
+                Optional<Produto> produtoOpt = produtoService.findById(item.getProduto().getId());
+                if (!produtoOpt.isPresent()) {
+                    throw new RuntimeException("Produto não encontrado: " + item.getProduto().getId());
+                }
+
+                Produto produtoGerenciado = produtoOpt.get();
+
+                // Verificar estoque
+                if (produtoGerenciado.getQuantidade() < item.getQuantidade()) {
+                    throw new RuntimeException("Estoque insuficiente para o produto: " + produtoGerenciado.getNome());
+                }
+
+                // Atualizar o produto no item
+                item.setProduto(produtoGerenciado);
+
+                // Garantir que o valorUnitario está definido
+                if (item.getValorUnitario() == null) {
+                    item.setValorUnitario(produtoGerenciado.getValorVenda());
+                }
+
+                // Calcular o subtotal
+                item.calcularSubtotal();
+
+                // Conectar o item à venda
+                item.setVenda(venda);
+            } else {
+                throw new RuntimeException("Produto inválido no item da venda");
             }
         }
 
-        return vendaRepository.save(venda);
+        // Recalcular o total da venda
+        venda.recalcularTotal();
+
+        // Salvar a venda
+        Venda vendaSalva = vendaRepository.save(venda);
+
+        // Atualizar o estoque após salvar com sucesso
+        for (ItemVenda item : vendaSalva.getItens()) {
+            produtoService.reduzirEstoque(item.getProduto().getId(), item.getQuantidade());
+        }
+
+        return vendaSalva;
     }
 
     @Transactional
@@ -73,22 +114,43 @@ public class VendaService {
 
     @Transactional
     public Venda adicionarItem(Long vendaId, ItemVenda novoItem) {
+        // Buscar a venda
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
 
-        // Verificar se o produto existe e tem estoque
+        // Verificar o produto
+        if (novoItem.getProduto() == null || novoItem.getProduto().getId() == null) {
+            throw new RuntimeException("Produto inválido");
+        }
+
+        // Buscar o produto do banco de dados
         Produto produto = produtoService.findById(novoItem.getProduto().getId())
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
+        // Verificar estoque
         if (produto.getQuantidade() < novoItem.getQuantidade()) {
             throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
         }
 
-        // Configurar o item e adicionar à venda
+        // Configurar o item
         novoItem.setProduto(produto);
+        novoItem.setValorUnitario(produto.getValorVenda());
+
+        // Garantir que a quantidade é válida
+        if (novoItem.getQuantidade() == null || novoItem.getQuantidade() <= 0) {
+            novoItem.setQuantidade(1);
+        }
+
+        // Calcular o subtotal
         novoItem.calcularSubtotal();
+
+        // Adicionar à venda
         venda.adicionarItem(novoItem);
 
+        System.out.println("Item adicionado: " + novoItem);
+        System.out.println("Venda após adição: itens=" + venda.getItens().size() + ", total=" + venda.getValorTotal());
+
+        // Salvar a venda
         return vendaRepository.save(venda);
     }
 
@@ -112,8 +174,20 @@ public class VendaService {
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
 
-        // Atualizar estoque
+        // Verificar se a venda tem itens
+        if (venda.getItens().isEmpty()) {
+            throw new RuntimeException("Não é possível finalizar uma venda sem itens");
+        }
+
+        // Recalcular o total para garantir
+        venda.recalcularTotal();
+
+        // Atualizar a data da venda para o momento da finalização
+        venda.setDataVenda(LocalDateTime.now());
+
+        // Atualizar o estoque (se ainda não foi feito)
         for (ItemVenda item : venda.getItens()) {
+            // Aqui você pode verificar se o estoque já foi reduzido ou não
             produtoService.reduzirEstoque(item.getProduto().getId(), item.getQuantidade());
         }
 
