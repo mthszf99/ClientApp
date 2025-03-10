@@ -36,3 +36,67 @@
     transform: rotate(360deg);
   }
 }
+
+/* Novos estilos para o layout da aplicação */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 12px 0;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-logo {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+}
+
+.nav-links:hover {
+  color: #61dafb;
+}
+
+.main-content {
+  flex: 1;
+  background-color: #f9f9f9;
+  min-height: calc(100vh - 120px); /* Altura da tela menos header e footer */
+}
+
+.footer {
+  padding: 15px 0;
+  background-color: #333;
+  color: white;
+  text-align: center;
+}
+
+.not-found {
+  text-align: center;
+  padding: 50px;
+  font-size: 24px;
+  color: #666;
+}
