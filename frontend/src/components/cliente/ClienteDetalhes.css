@@ -1,0 +1,136 @@
+.cliente-detalhes-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h2 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-back, .btn-edit, .btn-delete {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-back {
+    background-color: #607D8B;
+    color: white;
+  }
+  
+  .btn-edit {
+    background-color: #FFC107;
+    color: #333;
+  }
+  
+  .btn-delete {
+    background-color: #F44336;
+    color: white;
+  }
+  
+  .btn-back:hover {
+    background-color: #455A64;
+  }
+  
+  .btn-edit:hover {
+    background-color: #e5ac00;
+  }
+  
+  .btn-delete:hover {
+    background-color: #da190b;
+  }
+  
+  .cliente-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+  }
+  
+  .cliente-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    font-size: 22px;
+  }
+  
+  .cliente-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+  
+  .info-section {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .info-section h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 18px;
+  }
+  
+  .info-group {
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .info-label {
+    font-weight: 500;
+    color: #666;
+    min-width: 150px;
+    margin-right: 10px;
+  }
+  
+  .info-value {
+    color: #333;
+  }
+  
+  .observacao-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+  
+  .observacao-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 18px;
+  }
+  
+  .observacao-section p {
+    margin: 0;
+    line-height: 1.6;
+    color: #555;
+    white-space: pre-line;
+  }
+  
+  .error, .loading {
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+  }
