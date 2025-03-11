@@ -5,13 +5,15 @@ const API_URL = 'http://localhost:8080/clientes';
 const clienteService = {
   getAll: async () => {
     try {
+      console.log('Fazendo requisição para:', API_URL);
       const response = await axios.get(API_URL);
+      console.log('Dados recebidos:', response.data);
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar clientes:', error);
       throw error;
     }
-  },
+  },  
 
   getById: async (id) => {
     try {
