@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
@@ -7,33 +7,21 @@ import ClienteList from './components/cliente/ClienteList';
 import ClienteForm from './components/cliente/ClienteForm';
 import ClienteDetalhes from './components/cliente/ClienteDetalhes';
 
-// Componente de Navegação
-const NavBar = () => {
-  return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <a href="/" className="navbar-logo">
-          Sistema de Clientes
-        </a>
-        <div className="nav-menu">
-          <a href="/clientes" className="nav-links">Clientes</a>
-          {/* Adicione mais links de navegação conforme necessário */}
-        </div>
-      </div>
-    </nav>
-  );
-};
+// Importação do componente Sidebar
+import Sidebar from './components/layout/Sidebar';
 
 // Layout Principal
 const Layout = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
     <div className="app-container">
-      <NavBar />
-      <main className="main-content">
+      <Sidebar />
+      <main className={`main-content ${sidebarOpen ? 'sidebar-open' : ''}`}>
         {children}
       </main>
       <footer className="footer">
-        <p>&copy; {new Date().getFullYear()} - Sistema de Gerenciamento de Clientes</p>
+        <p>&copy; {new Date().getFullYear()} - Sistema de Gerenciamento</p>
       </footer>
     </div>
   );
@@ -53,7 +41,20 @@ function App() {
           <Route path="/clientes/editar/:id" element={<ClienteForm />} />
           <Route path="/clientes/visualizar/:id" element={<ClienteDetalhes />} />
           
-          {/* Adicione mais rotas conforme necessário */}
+          {/* Rotas para Fornecedores (ainda precisam ser implementadas) */}
+          <Route path="/fornecedores" element={<div className="placeholder">Lista de Fornecedores</div>} />
+          <Route path="/fornecedores/novo" element={<div className="placeholder">Cadastro de Fornecedores</div>} />
+          
+          {/* Rotas para Produtos (ainda precisam ser implementadas) */}
+          <Route path="/produtos" element={<div className="placeholder">Lista de Produtos</div>} />
+          <Route path="/produtos/novo" element={<div className="placeholder">Cadastro de Produtos</div>} />
+          
+          {/* Rotas para Vendas (ainda precisam ser implementadas) */}
+          <Route path="/vendas" element={<div className="placeholder">Lista de Vendas</div>} />
+          <Route path="/vendas/nova" element={<div className="placeholder">Nova Venda</div>} />
+          
+          {/* Rota para Orçamento (ainda precisa ser implementada) */}
+          <Route path="/orcamento" element={<div className="placeholder">Orçamentos</div>} />
           
           {/* Rota para páginas não encontradas */}
           <Route path="*" element={<div className="not-found">Página não encontrada</div>} />
