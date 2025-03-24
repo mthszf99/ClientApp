@@ -6,6 +6,9 @@ import './App.css';
 import ClienteList from './components/cliente/ClienteList';
 import ClienteForm from './components/cliente/ClienteForm';
 import ClienteDetalhes from './components/cliente/ClienteDetalhes';
+import ProdutoList from './components/produtos/ProdutoList';
+import ProdutoForm from './components/produtos/ProdutoForm';
+import ProdutoDetalhes from './components/produtos/ProdutoDetalhes'
 
 // Importação do componente Sidebar
 import Sidebar from './components/layout/Sidebar';
@@ -42,12 +45,14 @@ function App() {
           <Route path="/clientes/visualizar/:id" element={<ClienteDetalhes />} />
           
           {/* Rotas para Fornecedores (ainda precisam ser implementadas) */}
-          <Route path="/fornecedores" element={<div className="placeholder">Lista de Fornecedores</div>} />
+          <Route path="/fornecedores" element={<ClienteList />} />
           <Route path="/fornecedores/novo" element={<div className="placeholder">Cadastro de Fornecedores</div>} />
           
           {/* Rotas para Produtos (ainda precisam ser implementadas) */}
-          <Route path="/produtos" element={<div className="placeholder">Lista de Produtos</div>} />
-          <Route path="/produtos/novo" element={<div className="placeholder">Cadastro de Produtos</div>} />
+          <Route path="/produtos" element={<ProdutoList />} />
+          <Route path="/produtos/novo" element={<ProdutoForm/>} />
+          <Route path="/produtos/editar/:id" element={<ProdutoForm />} />
+          <Route path="/produtos/visualizar/:id" element={<ProdutoDetalhes />} />
           
           {/* Rotas para Vendas (ainda precisam ser implementadas) */}
           <Route path="/vendas" element={<div className="placeholder">Lista de Vendas</div>} />

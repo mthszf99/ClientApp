@@ -26,6 +26,8 @@ public class Produto {
     @Column(nullable = false)
     private BigDecimal valorVenda;
 
+    private String codigo;
+
     private String tipo;
 
     private String descricao;
@@ -86,6 +88,10 @@ public class Produto {
     public void setValorVenda(BigDecimal valorVenda) {
         this.valorVenda = valorVenda;
     }
+
+    public String getCodigo() { return codigo; }
+
+    public void setCodigo(String codigo) { this.codigo = codigo; }
 
     public String getTipo() {
         return tipo;
