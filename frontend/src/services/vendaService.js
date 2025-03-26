@@ -5,25 +5,13 @@ const API_URL = 'http://localhost:8080/vendas';
 const vendaService = {
   getAll: async () => {
     try {
-      const response = await axios.get(API_URL, {
-        // Adicione timeout e headers para mais informações
-        timeout: 5000,
-        headers: {
-          'Accept': 'application/json'
-        }
-      }); 
+      const response = await axios.get(API_URL);
       return response.data;
     } catch (error) {
-      // Log detalhado do erro
-      console.error('Erro completo:', error);
-      console.error('Erro de resposta:', error.response);
-      console.error('Erro de requisição:', error.request);
-      console.error('Mensagem de erro:', error.message);
-      
-      throw error;
+      console.error('Erro detalhado:', error.response ? error.response.data : error.message);
+      throw error; // Repropaga o erro para tratamento no componente
     }
   },
-
   getById: async (id) => {
     try {
       const response = await axios.get(`${API_URL}/${id}`);

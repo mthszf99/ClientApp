@@ -19,8 +19,8 @@ const VendaList = () => {
       setVendas(data);
       setError(null);
     } catch (err) {
-      console.error('Erro Completo:', err);
-      setError('Falha ao carregar as vendas. Por favor, tente novamente.');
+      console.error('Erro completo:', err);
+      setError(`Falha ao carregar as vendas: ${err.message}`);
     } finally {
       setLoading(false);
     }
