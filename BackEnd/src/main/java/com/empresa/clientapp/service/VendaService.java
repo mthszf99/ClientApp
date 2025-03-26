@@ -5,6 +5,12 @@ import com.empresa.clientapp.model.ItemVenda;
 import com.empresa.clientapp.model.Produto;
 import com.empresa.clientapp.model.Venda;
 import com.empresa.clientapp.repository.VendaRepository;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,12 +59,14 @@ public class VendaService {
             if (!clienteOpt.isPresent()) {
                 throw new RuntimeException("Cliente não encontrado");
             }
-            // Garantir que estamos usando a entidade gerenciada
+
+            System.out.println("Cliente original: " + venda.getCliente());
+            System.out.println("Cliente do banco: " + clienteOpt.get());
+
             venda.setCliente(clienteOpt.get());
         } else {
             throw new RuntimeException("Cliente é obrigatório para a venda");
         }
-
         // Processar cada item da venda
         for (ItemVenda item : venda.getItens()) {
             if (item.getProduto() != null && item.getProduto().getId() != null) {
@@ -193,4 +201,46 @@ public class VendaService {
 
         return vendaRepository.save(venda);
     }
+
+    @Transactional
+    public byte[] gerarPdfVenda(Long vendaId) {
+        Venda venda = vendaRepository.findById(vendaId)
+                .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Document document = new Document();
+            PdfWriter writer = PdfWriter.getInstance(document, baos);
+            document.open();
+
+            document.add(new Paragraph("Nota de Venda"));
+            document.add(new Paragraph("Código da Venda: " + venda.getId()));
+            document.add(new Paragraph("Cliente: " + venda.getCliente().getNome()));
+            document.add(new Paragraph("Data da Venda: " + venda.getDataVenda()));
+
+            PdfPTable table = new PdfPTable(4);
+            table.addCell("Produto");
+            table.addCell("Quantidade");
+            table.addCell("Valor Unitário");
+            table.addCell("Subtotal");
+
+            for (ItemVenda item : venda.getItens()) {
+                table.addCell(item.getProduto().getNome());
+                table.addCell(String.valueOf(item.getQuantidade()));
+                table.addCell(item.getValorUnitario().toString());
+                table.addCell(item.getSubtotal().toString());
+            }
+
+            document.add(table);
+            document.add(new Paragraph("Valor Total: " + venda.getValorTotal()));
+
+            document.close();
+            writer.close();
+
+            return baos.toByteArray();
+        } catch (DocumentException e) {
+            throw new RuntimeException("Erro ao gerar PDF", e);
+        }
+    }
+
 }

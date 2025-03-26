@@ -8,7 +8,10 @@ import ClienteForm from './components/cliente/ClienteForm';
 import ClienteDetalhes from './components/cliente/ClienteDetalhes';
 import ProdutoList from './components/produtos/ProdutoList';
 import ProdutoForm from './components/produtos/ProdutoForm';
-import ProdutoDetalhes from './components/produtos/ProdutoDetalhes'
+import ProdutoDetalhes from './components/produtos/ProdutoDetalhes';
+import VendaList from './components/vendas/VendaList';
+import VendaDetalhes from './components/vendas/VendaDetalhes';
+import VendaForm from './components/vendas/VendaForm';
 
 // Importação do componente Sidebar
 import Sidebar from './components/layout/Sidebar';
@@ -55,8 +58,9 @@ function App() {
           <Route path="/produtos/visualizar/:id" element={<ProdutoDetalhes />} />
           
           {/* Rotas para Vendas (ainda precisam ser implementadas) */}
-          <Route path="/vendas" element={<div className="placeholder">Lista de Vendas</div>} />
-          <Route path="/vendas/nova" element={<div className="placeholder">Nova Venda</div>} />
+          <Route path="/vendas" element={<VendaList />} />
+          <Route path="/vendas/nova" element={<VendaForm />} />
+          <Route path="/vendas/visualizar/:id" element={<VendaDetalhes />} />
           
           {/* Rota para Orçamento (ainda precisa ser implementada) */}
           <Route path="/orcamento" element={<div className="placeholder">Orçamentos</div>} />

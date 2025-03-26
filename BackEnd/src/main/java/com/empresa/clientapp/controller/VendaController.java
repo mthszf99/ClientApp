@@ -5,14 +5,14 @@ import com.empresa.clientapp.model.Venda;
 import com.empresa.clientapp.service.VendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/vendas")
 public class VendaController {
@@ -22,11 +22,9 @@ public class VendaController {
 
     @GetMapping
     public List<Venda> getAllVendas() {
+        System.out.println("Recebendo requisição para buscar todas as vendas");
         List<Venda> vendas = vendaService.findAll();
-
-        // Garantir que os valores totais e itens estão atualizados
-        vendas.forEach(Venda::recalcularTotal);
-
+        System.out.println("Número de vendas encontradas: " + vendas.size());
         return vendas;
     }
 
@@ -66,6 +64,19 @@ public class VendaController {
         List<Venda> vendas = vendaService.findByProdutoId(produtoId);
         vendas.forEach(Venda::recalcularTotal);
         return vendas;
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> downloadPdfVenda(@PathVariable Long id) {
+        byte[] pdfContent = vendaService.gerarPdfVenda(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("venda_" + id + ".pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
     }
 
     @PostMapping
