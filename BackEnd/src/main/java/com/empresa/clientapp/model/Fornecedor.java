@@ -2,7 +2,6 @@ package com.empresa.clientapp.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,14 +26,16 @@ public class Fornecedor {
 
     private String email;
 
-    @NotNull
-    private LocalDateTime dataCadastro;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCadastro = LocalDateTime.now();
 
     private LocalDateTime dataAtualizacao;
 
     @PrePersist
     protected void onCreate() {
-        this.dataCadastro = LocalDateTime.now();
+        if (this.dataCadastro == null) {
+            this.dataCadastro = LocalDateTime.now();
+        }
     }
 
     @PreUpdate

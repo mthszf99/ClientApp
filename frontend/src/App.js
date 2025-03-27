@@ -12,6 +12,11 @@ import ProdutoDetalhes from './components/produtos/ProdutoDetalhes';
 import VendaList from './components/vendas/VendaList';
 import VendaDetalhes from './components/vendas/VendaDetalhes';
 import VendaForm from './components/vendas/VendaForm';
+import OrcamentoForm from './components/orcamentos/OrcamentoForm';
+import FornecedorList from './components/fornecedor/FornecedorList';
+import FornecedorForm from './components/fornecedor/FornecedorForm';
+import FornecedorDetalhes from './components/fornecedor/FornecedorDetalhes'
+
 
 // Importação do componente Sidebar
 import Sidebar from './components/layout/Sidebar';
@@ -48,8 +53,10 @@ function App() {
           <Route path="/clientes/visualizar/:id" element={<ClienteDetalhes />} />
           
           {/* Rotas para Fornecedores (ainda precisam ser implementadas) */}
-          <Route path="/fornecedores" element={<ClienteList />} />
-          <Route path="/fornecedores/novo" element={<div className="placeholder">Cadastro de Fornecedores</div>} />
+          <Route path="/fornecedores" element={<FornecedorList/>} />
+          <Route path="/fornecedores/novo" element={<FornecedorForm />} />
+          <Route path="/fornecedores/editar/:id" element={<FornecedorForm />} />
+          <Route path="/fornecedores/visualizar/:id" element={<FornecedorDetalhes />} />
           
           {/* Rotas para Produtos (ainda precisam ser implementadas) */}
           <Route path="/produtos" element={<ProdutoList />} />
@@ -60,10 +67,11 @@ function App() {
           {/* Rotas para Vendas (ainda precisam ser implementadas) */}
           <Route path="/vendas" element={<VendaList />} />
           <Route path="/vendas/nova" element={<VendaForm />} />
+          <Route path="/vendas/editar/:id" element={<VendaForm />} />
           <Route path="/vendas/visualizar/:id" element={<VendaDetalhes />} />
           
           {/* Rota para Orçamento (ainda precisa ser implementada) */}
-          <Route path="/orcamento" element={<div className="placeholder">Orçamentos</div>} />
+          <Route path="/orcamento" element={<OrcamentoForm />} />
           
           {/* Rota para páginas não encontradas */}
           <Route path="*" element={<div className="not-found">Página não encontrada</div>} />

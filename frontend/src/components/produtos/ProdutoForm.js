@@ -1,12 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import produtoService from '../../services/produtoService';
+import fornecedorService from '../../services/fornecedorService';
 import './ProdutoForm.css';
 
 const ProdutoForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = !!id;
+  
+  const [fornecedores, setFornecedores] = useState([]); // Add this line to declare fornecedores state
   
   const [formData, setFormData] = useState({
     nome: '',
@@ -25,10 +29,22 @@ const ProdutoForm = () => {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
+    fetchFornecedores();
+
     if (isEditing) {
       fetchProduto();
     }
   }, [id]);
+
+  const fetchFornecedores = async () => {
+    try {
+      const data = await fornecedorService.getAll();
+      setFornecedores(data);
+    } catch (err) {
+      console.error('Erro ao buscar fornecedores:', err);
+      setError('Falha ao carregar fornecedores');
+    }
+  };
 
   const fetchProduto = async () => {
     try {
@@ -37,7 +53,8 @@ const ProdutoForm = () => {
       setFormData({
         ...produto,
         valorCompra: produto.valorCompra.toFixed(2),
-        valorVenda: produto.valorVenda.toFixed(2)
+        valorVenda: produto.valorVenda.toFixed(2),
+        fornecedor: produto.fornecedor ? produto.fornecedor.id : null
       });
       setError(null);
     } catch (err) {
@@ -78,6 +95,11 @@ const ProdutoForm = () => {
       return false;
     }
     
+    if (!formData.fornecedor) {
+      setError('Fornecedor é obrigatório.');
+      return false;
+    }
+    
     return true;
   };
 
@@ -90,12 +112,13 @@ const ProdutoForm = () => {
     
     try {
       setLoading(true);
-      // Converter valores para números
+      // Converter valores para números e preparar objeto
       const produtoData = {
         ...formData,
         quantidade: parseInt(formData.quantidade),
         valorCompra: parseFloat(formData.valorCompra),
-        valorVenda: parseFloat(formData.valorVenda)
+        valorVenda: parseFloat(formData.valorVenda),
+        fornecedor: { id: formData.fornecedor }
       };
 
       if (isEditing) {
@@ -230,14 +253,25 @@ const ProdutoForm = () => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="descricao">Descrição</label>
-          <textarea
-            id="descricao"
-            name="descricao"
-            value={formData.descricao}
+          <label htmlFor="fornecedor">Fornecedor*</label>
+          <select
+            id="fornecedor"
+            name="fornecedor"
+            value={formData.fornecedor || ''}
             onChange={handleChange}
-            rows={4}
-          />
+            className={submitted && !formData.fornecedor ? 'invalid' : ''}
+            required
+          >
+            <option value="">Selecione um Fornecedor</option>
+            {fornecedores.map(fornecedor => (
+              <option key={fornecedor.id} value={fornecedor.id}>
+                {fornecedor.nome}
+              </option>
+            ))}
+          </select>
+          {submitted && !formData.fornecedor && (
+            <div className="error-feedback">Fornecedor é obrigatório</div>
+          )}
         </div>
         
         <div className="form-actions">
