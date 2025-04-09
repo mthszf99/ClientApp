@@ -87,9 +87,13 @@ public class VendaController {
                 venda.setDataVenda(LocalDateTime.now());
             }
 
+            // Adicionar log para o desconto
+            System.out.println("Desconto recebido no controller: " + venda.getDesconto());
+
             Venda novaVenda = vendaService.save(venda);
             return ResponseEntity.ok(novaVenda);
         } catch (Exception e) {
+            e.printStackTrace(); // Adicionar para ver o erro completo
             return ResponseEntity.badRequest().body(null);
         }
     }

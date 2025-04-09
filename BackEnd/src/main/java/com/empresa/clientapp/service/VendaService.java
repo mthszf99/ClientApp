@@ -10,11 +10,12 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import java.io.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,14 @@ public class VendaService {
         } else {
             throw new RuntimeException("Cliente é obrigatório para a venda");
         }
+
+        // Garantir que o desconto seja preservado
+        if (venda.getDesconto() != null) {
+            System.out.println("Desconto informado: " + venda.getDesconto());
+        } else {
+            venda.setDesconto(BigDecimal.ZERO);
+        }
+
         // Processar cada item da venda
         for (ItemVenda item : venda.getItens()) {
             if (item.getProduto() != null && item.getProduto().getId() != null) {
@@ -101,7 +110,7 @@ public class VendaService {
             }
         }
 
-        // Recalcular o total da venda
+        // Recalcular o total da venda explicitamente depois de processar os itens
         venda.recalcularTotal();
 
         // Salvar a venda

@@ -81,26 +81,34 @@ public class Venda {
             }
 
             // Log para debug
-            System.out.println("Item: " + item.getProduto().getNome() + " - Subtotal: " + item.getSubtotal());
+            System.out.println("Item: " + (item.getProduto() != null ? item.getProduto().getNome() : "null") + " - Subtotal: " + item.getSubtotal());
 
             if (item.getSubtotal() != null) {
                 total = total.add(item.getSubtotal());
             }
         }
 
+        // Log antes do desconto
+        System.out.println("Total antes do desconto: " + total);
+        System.out.println("Desconto a ser aplicado: " + desconto);
+
         // Aplicar desconto se existir
         if (desconto != null && desconto.compareTo(BigDecimal.ZERO) > 0) {
             if (desconto.compareTo(total) <= 0) {
                 total = total.subtract(desconto);
+                System.out.println("Desconto aplicado. Novo total: " + total);
             } else {
                 // Se o desconto for maior que o total, apenas zerar o total
                 desconto = total;
                 total = BigDecimal.ZERO;
+                System.out.println("Desconto maior que total. Total zerado.");
             }
+        } else {
+            System.out.println("Nenhum desconto aplicado.");
         }
 
         // Log para debug
-        System.out.println("Valor total calculado: " + total);
+        System.out.println("Valor total calculado final: " + total);
 
         this.valorTotal = total;
     }
@@ -147,6 +155,7 @@ public class Venda {
     }
 
     public void setDesconto(BigDecimal desconto) {
+        System.out.println("Definindo desconto: " + desconto);
         this.desconto = desconto != null ? desconto : BigDecimal.ZERO;
         recalcularTotal();
     }

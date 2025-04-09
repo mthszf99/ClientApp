@@ -14,4 +14,3 @@ public class ClientAppApplication {
         SpringApplication.run(ClientAppApplication.class, args);
     }
 }
-
