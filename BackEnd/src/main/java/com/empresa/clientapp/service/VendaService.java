@@ -5,11 +5,13 @@ import com.empresa.clientapp.model.ItemVenda;
 import com.empresa.clientapp.model.Produto;
 import com.empresa.clientapp.model.Venda;
 import com.empresa.clientapp.repository.VendaRepository;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.UnitValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -218,38 +221,76 @@ public class VendaService {
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Document document = new Document();
-            PdfWriter writer = PdfWriter.getInstance(document, baos);
-            document.open();
 
+            // Criando o PdfWriter
+            PdfWriter writer = new PdfWriter(baos);
+
+            // Criando o PdfDocument
+            PdfDocument pdf = new PdfDocument(writer);
+
+            // Criando o Document
+            Document document = new Document(pdf);
+
+            // Adicionando o título e informações
             document.add(new Paragraph("Nota de Venda"));
             document.add(new Paragraph("Código da Venda: " + venda.getId()));
             document.add(new Paragraph("Cliente: " + venda.getCliente().getNome()));
-            document.add(new Paragraph("Data da Venda: " + venda.getDataVenda()));
 
-            PdfPTable table = new PdfPTable(4);
-            table.addCell("Produto");
-            table.addCell("Quantidade");
-            table.addCell("Valor Unitário");
-            table.addCell("Subtotal");
+            // Formatando a data
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            String dataFormatada = venda.getDataVenda().format(formatter);
+            document.add(new Paragraph("Data da Venda: " + dataFormatada));
 
+            // Adicionando espaço
+            document.add(new Paragraph(" "));
+
+            // Criando a tabela com 4 colunas
+            Table table = new Table(UnitValue.createPercentArray(new float[]{40, 20, 20, 20}));
+
+            // Adicionando o cabeçalho
+            table.addHeaderCell(new Cell().add(new Paragraph("Produto")));
+            table.addHeaderCell(new Cell().add(new Paragraph("Quantidade")));
+            table.addHeaderCell(new Cell().add(new Paragraph("Valor Unitário")));
+            table.addHeaderCell(new Cell().add(new Paragraph("Subtotal")));
+
+            // Adicionando os itens
             for (ItemVenda item : venda.getItens()) {
-                table.addCell(item.getProduto().getNome());
-                table.addCell(String.valueOf(item.getQuantidade()));
-                table.addCell(item.getValorUnitario().toString());
-                table.addCell(item.getSubtotal().toString());
+                table.addCell(new Cell().add(new Paragraph(item.getProduto().getNome())));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(item.getQuantidade()))));
+                table.addCell(new Cell().add(new Paragraph(item.getValorUnitario().toString())));
+                table.addCell(new Cell().add(new Paragraph(item.getSubtotal().toString())));
             }
 
+            // Adicionando a tabela ao documento
             document.add(table);
+
+            // Adicionando espaço
+            document.add(new Paragraph(" "));
+
+            // Adicionando o total da venda
             document.add(new Paragraph("Valor Total: " + venda.getValorTotal()));
 
+            // Se houver desconto, mostrar
+            if (venda.getDesconto().compareTo(BigDecimal.ZERO) > 0) {
+                document.add(new Paragraph("Desconto Aplicado: " + venda.getDesconto()));
+            }
+
+            // Se houver forma de pagamento, mostrar
+            if (venda.getFormaPagamento() != null && !venda.getFormaPagamento().isEmpty()) {
+                document.add(new Paragraph("Forma de Pagamento: " + venda.getFormaPagamento()));
+            }
+
+            // Se houver observações, mostrar
+            if (venda.getObservacoes() != null && !venda.getObservacoes().isEmpty()) {
+                document.add(new Paragraph("Observações: " + venda.getObservacoes()));
+            }
+
+            // Fechando o documento
             document.close();
-            writer.close();
 
             return baos.toByteArray();
-        } catch (DocumentException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Erro ao gerar PDF", e);
         }
     }
-
 }
